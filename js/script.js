@@ -18,7 +18,7 @@ FSJS project 2 - List Filter and Pagination
 ***/
 const liList = document.querySelectorAll('.student-item');
 const numberOfItemsPerPage = 10;
-
+const page = document.querySelector('.page');
 
 
 
@@ -62,6 +62,19 @@ function showPage(list, pageNumber) {
    functionality to the pagination buttons.
 ***/
 
+function appendPageLinks() {
+    const paginationDiv = document.createElement('div');
+    const ul = document.createElement('ul');
+    let li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = "#";
+    li.appendChild(a);
+    for (let i = 1; i < (liList.length/10); i += 1) {
+        a.textContent = i;
+        ul.appendChild(li);
+    }
+    page.appendChild(ul);
+}
 
 
 
