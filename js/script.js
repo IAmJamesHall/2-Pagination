@@ -6,6 +6,7 @@ FSJS project 2 - List Filter and Pagination
 document.addEventListener("DOMContentLoaded", () => {
     appendPageLinks(studentList);
     appendSearchBar();
+    showPage(studentList, 1);
 })
 
 //define global variables
@@ -15,6 +16,7 @@ const page = document.querySelector('.page');
 
 
 //show a certain page based on an argument 'pageNumber'
+//also, call appendPageLinks to add pagination
 function showPage(list, pageNumber) {
     const ul = document.createElement('ul');
     ul.className = "student-list";
@@ -32,11 +34,21 @@ function showPage(list, pageNumber) {
     const page = existingUl.parentNode;
     page.insertBefore(ul, existingUl);
     page.removeChild(existingUl);
+
+    appendPageLinks(list);
 }
 
 
 
 
+//deletes element based on selector, if it exists
+function deleteElementFromSelector(selector) {
+    const element = document.querySelector(selector);
+    if (element) {
+        const parentNode = element.parentNode;
+        parentNode.removeChild(element)
+    }
+}
 
 //Appends pagination links to DOM and selects first one
 function appendPageLinks(list) {
@@ -45,13 +57,17 @@ function appendPageLinks(list) {
         const paginationDiv = document.createElement('div');
         paginationDiv.className = "pagination";
         const ul = document.createElement('ul');
-        for (let i = 1; i <= (numberOfPages); i += 1) {
+        for (let i = 1; i <= numberOfPages; i += 1) {
             ul.appendChild(createPageNumberLi(i));
         }
         paginationDiv.appendChild(ul);
+        deleteElementFromSelector('.pagination')
         page.appendChild(paginationDiv);
+
         enablePageLinks();
-        showPage(list, 1);
+
+    } else { //remove pagination links if numberOfPages !> 1
+        deleteElementFromSelector('.pagination');
     }
 
     //return pagination link to append to the page
@@ -69,7 +85,7 @@ function appendPageLinks(list) {
         const paginationDiv = page.querySelector('.pagination');
         paginationDiv.addEventListener('click', (e) => {
             const pageNumber = e.target.textContent;
-            showPage(studentList, pageNumber);
+            showPage(list, pageNumber);
         });
     }
 }
@@ -89,10 +105,10 @@ function appendSearchBar() {
     pageHeader.appendChild(searchDiv);
 
     enableSearch();
+
     function enableSearch() {
-        searchButton.addEventListener('click', () => {
+        searchDiv.addEventListener('keyup', () => {
             searchInList(studentList, searchBar.value);
-            console.log(searchBar.value);
         })
     }
 }
@@ -108,7 +124,6 @@ function searchInList(list, query) {
         }
     }
     showPage(searchResults, 1);
-    appendPageLinks(studentList);
-
 }
+
 
