@@ -123,7 +123,15 @@ function searchInList(list, query) {
             searchResults.push(listItem)
         }
     }
-    showPage(searchResults, 1);
+    if (searchResults.length == 0) {
+        const h3 = document.createElement('h3');
+        h3.textContent = "No results";
+        deleteElementFromSelector('.pagination');
+        deleteElementFromSelector('ul.student-list');
+        page.appendChild(h3);
+    } else {
+        showPage(searchResults, 1);
+    }
 }
 
 
