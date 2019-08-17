@@ -31,9 +31,11 @@ function showPage(list, pageNumber) {
         ul.appendChild(li);
     }
     const existingUl = document.querySelector('ul.student-list');
-    const page = existingUl.parentNode;
+    const page = document.querySelector('.page');
     page.insertBefore(ul, existingUl);
-    page.removeChild(existingUl);
+    if (existingUl) {
+        page.removeChild(existingUl);
+    }
 
     appendPageLinks(list);
 }
@@ -92,6 +94,7 @@ function appendPageLinks(list) {
 
 //Append search bar to DOM
 function appendSearchBar() {
+    //create elements for search bar group
     const searchDiv = document.createElement('div');
     searchDiv.className = 'student-search';
     const searchBar = document.createElement('input');
@@ -99,33 +102,36 @@ function appendSearchBar() {
     const searchButton = document.createElement('button');
     searchButton.textContent = "Search";
 
+    //append search elements to page
     searchDiv.appendChild(searchBar);
     searchDiv.appendChild(searchButton);
     const pageHeader = document.querySelector('.page-header');
     pageHeader.appendChild(searchDiv);
 
-    enableSearch();
-
-    function enableSearch() {
-        searchDiv.addEventListener('keyup', () => {
-            searchInList(studentList, searchBar.value);
-        })
-    }
+    //enable real-time search results
+    searchDiv.addEventListener('keyup', () => {
+        searchInList(studentList, searchBar.value);
+    })
 }
 
+//searches in list for query and runs showPage with the results
 function searchInList(list, query) {
     let searchResults = [];
     for (let i = 0; i < list.length; i += 1) {
         let listItem = list[i];
-        let studentName = listItem.querySelector('h3').textContent;
-        studentName = studentName.toLowerCase();
-        if (studentName.includes(query.toLowerCase())) {
+        let studentName = listItem.querySelector('h3');
+        let studentNameTextContent = studentName.textContent;
+        query = query.toLowerCase();
+        if (studentNameTextContent.includes(query)) {
+            studentName.innerHTML = highlightSearchItem(studentNameTextContent, query);
             searchResults.push(listItem)
         }
     }
+    deleteElementFromSelector('.no-results');
     if (searchResults.length == 0) {
         const h3 = document.createElement('h3');
         h3.textContent = "No results";
+        h3.className = "no-results";
         deleteElementFromSelector('.pagination');
         deleteElementFromSelector('ul.student-list');
         page.appendChild(h3);
@@ -134,4 +140,10 @@ function searchInList(list, query) {
     }
 }
 
-
+//returns 'result' with all instances of 'query' surrounded by a span tag
+function highlightSearchItem(result, query) {
+    const highlight = `<span class="highlighted">${query}</span>`;
+    let regexQuery = new RegExp(query, "g");
+    let highlightedResult = result.replace(regexQuery, highlight);
+    return highlightedResult;
+}

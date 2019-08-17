@@ -1,0 +1,9 @@
+.highlighted {
+    background-color: #3e3e27;
+    color: aliceblue;
+}
+
+.no-results {
+    text-align: center;
+    margin-top: 50px;
+}
