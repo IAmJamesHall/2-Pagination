@@ -1,6 +1,8 @@
 /******************************************
 Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
+James Hall
+Aug 19, 2019
 ******************************************/
    
 document.addEventListener("DOMContentLoaded", () => {
