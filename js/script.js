@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //define global variables
 const studentList = document.querySelectorAll('.student-item');
-const numberOfItemsPerPage = 10;
+const numberOfItemsPerPage = 8;
 const page = document.querySelector('.page');
 
 
@@ -25,6 +25,7 @@ function showPage(list, pageNumber) {
     let li = document.createElement('li');
     let startIndex = pageNumber * numberOfItemsPerPage - numberOfItemsPerPage;
     let endIndex = pageNumber * numberOfItemsPerPage;
+    //if there are less than 10 items on the page, set endIndex accordingly
     if (endIndex >= list.length) {
         endIndex = list.length;
     }
@@ -35,7 +36,7 @@ function showPage(list, pageNumber) {
     const existingUl = document.querySelector('ul.student-list');
     const page = document.querySelector('.page');
     page.insertBefore(ul, existingUl);
-    if (existingUl) {
+    if (existingUl) { //as long as the list exists, remove it from the page
         page.removeChild(existingUl);
     }
 
@@ -46,7 +47,7 @@ function showPage(list, pageNumber) {
 
 
 //deletes element based on selector, if it exists
-function deleteElementFromSelector(selector) {
+function deleteElement(selector) {
     const element = document.querySelector(selector);
     if (element) {
         const parentNode = element.parentNode;
@@ -56,7 +57,7 @@ function deleteElementFromSelector(selector) {
 
 //Appends pagination links to DOM and selects first one
 function appendPageLinks(list) {
-    const numberOfPages = Math.ceil(list.length/10);
+    const numberOfPages = Math.ceil(list.length/numberOfItemsPerPage);
     if (numberOfPages > 1) {
         const paginationDiv = document.createElement('div');
         paginationDiv.className = "pagination";
@@ -65,13 +66,13 @@ function appendPageLinks(list) {
             ul.appendChild(createPageNumberLi(i));
         }
         paginationDiv.appendChild(ul);
-        deleteElementFromSelector('.pagination')
+        deleteElement('.pagination')
         page.appendChild(paginationDiv);
 
         enablePageLinks();
 
-    } else { //remove pagination links if numberOfPages !> 1
-        deleteElementFromSelector('.pagination');
+    } else { //remove pagination links if numberOfPages <= 1
+        deleteElement('.pagination');
     }
 
     //return pagination link to append to the page
@@ -122,20 +123,19 @@ function searchInList(list, query) {
     for (let i = 0; i < list.length; i += 1) {
         let listItem = list[i];
         let studentName = listItem.querySelector('h3');
-        let studentNameTextContent = studentName.textContent;
         query = query.toLowerCase();
-        if (studentNameTextContent.includes(query)) {
-            studentName.innerHTML = highlightSearchItem(studentNameTextContent, query);
+        if (studentName.textContent.includes(query)) {
+            studentName.innerHTML = highlightSearchItem(studentName.textContent, query);
             searchResults.push(listItem)
         }
     }
-    deleteElementFromSelector('.no-results');
-    if (searchResults.length == 0) {
+    deleteElement('.no-results');
+    if (searchResults.length == 0) { //create a "No Results" message
         const h3 = document.createElement('h3');
         h3.textContent = "No results";
         h3.className = "no-results";
-        deleteElementFromSelector('.pagination');
-        deleteElementFromSelector('ul.student-list');
+        deleteElement('.pagination');
+        deleteElement('ul.student-list');
         page.appendChild(h3);
     } else {
         showPage(searchResults, 1);
@@ -144,8 +144,8 @@ function searchInList(list, query) {
 
 //returns 'result' with all instances of 'query' surrounded by a span tag
 function highlightSearchItem(result, query) {
-    const highlight = `<span class="highlighted">${query}</span>`;
+    const highlighted = `<span class="highlighted">${query}</span>`;
     let regexQuery = new RegExp(query, "g");
-    let highlightedResult = result.replace(regexQuery, highlight);
+    let highlightedResult = result.replace(regexQuery, highlighted);
     return highlightedResult;
 }
