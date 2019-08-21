@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //define global variables
 const studentList = document.querySelectorAll('.student-item');
-const numberOfItemsPerPage = 8;
+const numberOfItemsPerPage = 10;
 const page = document.querySelector('.page');
 
 
@@ -22,7 +22,7 @@ const page = document.querySelector('.page');
 function showPage(list, pageNumber) {
     const ul = document.createElement('ul');
     ul.className = "student-list";
-    let li = document.createElement('li');
+    const li = document.createElement('li');
     let startIndex = pageNumber * numberOfItemsPerPage - numberOfItemsPerPage;
     let endIndex = pageNumber * numberOfItemsPerPage;
     //if there are less than 10 items on the page, set endIndex accordingly
@@ -122,7 +122,7 @@ function searchInList(list, query) {
     let searchResults = [];
     for (let i = 0; i < list.length; i += 1) {
         let listItem = list[i];
-        let studentName = listItem.querySelector('h3');
+        const studentName = listItem.querySelector('h3');
         query = query.toLowerCase();
         if (studentName.textContent.includes(query)) {
             studentName.innerHTML = highlightSearchItem(studentName.textContent, query);
@@ -145,7 +145,7 @@ function searchInList(list, query) {
 //returns 'result' with all instances of 'query' surrounded by a span tag
 function highlightSearchItem(result, query) {
     const highlighted = `<span class="highlighted">${query}</span>`;
-    let regexQuery = new RegExp(query, "g");
+    const regexQuery = new RegExp(query, "g");
     let highlightedResult = result.replace(regexQuery, highlighted);
     return highlightedResult;
 }
