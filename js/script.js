@@ -30,7 +30,7 @@ function showPage(list, pageNumber) {
         endIndex = list.length;
     }
     for (let i = startIndex; i < endIndex; i += 1) {
-        li = list[i];
+        const li = list[i];
         ul.appendChild(li);
     }
     const existingUl = document.querySelector('ul.student-list');
